@@ -1,3 +1,14 @@
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => res.send('Bot is alive'));
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log('Keep alive server running');
+});
+
 const { 
     Client, 
     GatewayIntentBits, 
@@ -30,23 +41,28 @@ const client = new Client({
 client.once('ready', async () => {
     console.log(`Connecté en tant que ${client.user.tag}`);
 
-    const channel = await client.channels.fetch('1517649783051784283');
-    if (channel) {
-        const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId('verify_button')
-                .setLabel('Se vérifier')
-                .setStyle(ButtonStyle.Success)
-        );
+    try {
+        const channel = await client.channels.fetch('1517649783051784283');
 
-        channel.send({
-            content: "🔐 Clique sur le bouton pour être vérifié !",
-            components: [row]
-        });
+        if (channel) {
+            const row = new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                    .setCustomId('verify_button')
+                    .setLabel('Se vérifier')
+                    .setStyle(ButtonStyle.Success)
+            );
+
+            await channel.send({
+                content: "🔐 Clique sur le bouton pour être vérifié !",
+                components: [row]
+            });
+        }
+    } catch (err) {
+        console.error("Erreur envoi bouton:", err);
     }
 });
 
-// 📌 INTERACTIONS (BOUTON + SLASH + IA)
+// 📌 INTERACTIONS
 client.on(Events.InteractionCreate, async interaction => {
 
     // 🔘 BOUTON VERIFY
@@ -109,7 +125,7 @@ client.on(Events.InteractionCreate, async interaction => {
                 return interaction.editReply(answer);
 
             } catch (err) {
-                console.error(err);
+                console.error("OPENAI ERROR:", err);
                 return interaction.editReply("❌ Erreur IA");
             }
         }
