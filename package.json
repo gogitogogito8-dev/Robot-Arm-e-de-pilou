@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "discord.js": "^14.26.4",
+    "openai": "^6.44.0"
+  },
+  "name": "le-bot-xv3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
